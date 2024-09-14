@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wet-bulb temperature</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <style>
+      svg {
+        outline: 2px solid black;
+      }
+      .line {
+        stroke: black;
+        stroke-width: 2;
+      }
+      .circle-start {
+        fill: darkgreen;
+      }
+      .circle-end {
+        fill: red;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="500" height="600"></svg>
+
+    <script>
+      const data = [
+        { nome_estacao: "MANAUS", x1: 25.5, x2: 25.8, y1: 5 },
+        { nome_estacao: "MACAPA", x1: 25.8, x2: 25.8, y1: 10 },
+        { nome_estacao: "FORTALEZA", x1: 25.1, x2: 25.1, y1: 15 },
+        { nome_estacao: "JAGUARUANA", x1: 25.0, x2: 25.1, y1: 20 },
+        { nome_estacao: "IMPERATRIZ", x1: 24.8, x2: 25.4, y1: 25 },
+        { nome_estacao: "SAO LUIS", x1: 25.3, x2: 25.6, y1: 30 },
+        { nome_estacao: "TURIACU", x1: 25.4, x2: 25.5, y1: 35 },
+        { nome_estacao: "ZE DOCA", x1: 25.0, x2: 25.2, y1: 40 },
+        { nome_estacao: "NHUMIRIM (NHECOLANDIA)", x1: 25.8, x2: 25.7, y1: 45 },
+        { nome_estacao: "BELEM", x1: 25.5, x2: 25.7, y1: 50 },
+        { nome_estacao: "BELTERRA", x1: 25.5, x2: 25.7, y1: 55 },
+        { nome_estacao: "CAMETA", x1: 26.1, x2: 26.5, y1: 60 },
+        { nome_estacao: "CONCEICAO DO ARAGUAIA", x1: 26.5, x2: 25.9, y1: 65 },
+        { nome_estacao: "ITAITUBA", x1: 27.1, x2: 26.8, y1: 70 },
+        { nome_estacao: "MARABA", x1: 25.5, x2: 25.6, y1: 75 },
+        { nome_estacao: "OBIDOS", x1: 25.8, x2: 25.9, y1: 80 },
+        { nome_estacao: "PORTO DE MOZ", x1: 26.3, x2: 26.2, y1: 85 },
+        { nome_estacao: "SOURE", x1: 25.7, x2: 25.8, y1: 90 },
+        { nome_estacao: "TRACUATEUA", x1: 25.7, x2: 25.5, y1: 95 },
+        { nome_estacao: "JOAO PESSOA", x1: 25.0, x2: 25.2, y1: 100 },
+        { nome_estacao: "PARNAIBA", x1: 25.1, x2: 25.1, y1: 105 },
+        { nome_estacao: "NATAL", x1: 25.3, x2: 25.5, y1: 110 },
+      ];
+
+      const width = 500;
+      const height = 600;
+      const margin = { top: 20, right: 20, bottom: 30, left: 230 };
+      const svg = d3.select("svg").attr("width", width).attr("height", height);
+
+      const xScale = d3.scaleLinear();
+      const xDomainMin = d3.min(data, function (d) {
+        return Math.min(d.x1, d.x2);
+      });
+      const xDomainMax = d3.max(data, function (d) {
+        return Math.max(d.x1, d.x2);
+      });
+      xScale.domain([xDomainMin - 1, xDomainMax + 1]);
+      xScale.range([margin.left, width - margin.right]);
+
+      const yScale = d3.scaleLinear();
+      const yDomainMax = d3.max(data, function (d) {
+        return d.y1;
+      });
+      yScale.domain([0, yDomainMax]);
+      yScale.range([height - margin.bottom, margin.top]);
+
+      const lines = svg.selectAll(".line").data(data);
+      lines
+        .enter()
+        .append("line")
+        .attr("x1", function (d) {
+          return xScale(d.x1);
+        })
+        .attr("y1", function (d) {
+          return yScale(d.y1);
+        })
+        .attr("x2", function (d) {
+          return xScale(d.x2);
+        })
+        .attr("y2", function (d) {
+          return yScale(d.y1);
+        })
+        .attr("class", "line");
+
+      const circlesStart = svg.selectAll(".circle-start").data(data);
+      circlesStart
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) {
+          return xScale(d.x1);
+        })
+        .attr("cy", function (d) {
+          return yScale(d.y1);
+        })
+        .attr("r", 3)
+        .attr("class", "circle-start");
+
+      const circlesEnd = svg.selectAll(".circle-end").data(data);
+      circlesEnd
+        .enter()
+        .append("circle")
+        .attr("cx", function (d) {
+          return xScale(d.x2);
+        })
+        .attr("cy", function (d) {
+          return yScale(d.y1);
+        })
+        .attr("r", 3)
+        .attr("class", "circle-end");
+
+      svg
+        .selectAll(".label")
+        .data(data)
+        .enter()
+        .append("text")
+        .attr("x", margin.left - 10)
+        .attr("y", function (d) {
+          return yScale(d.y1);
+        })
+        .attr("text-anchor", "end")
+        .text(function (d) {
+          return d.nome_estacao;
+        })
+        .attr("class", "label");
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

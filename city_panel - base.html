@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City_Panel</title>
+    <style>
+        svg { 
+            outline: 2px solid black;
+        }
+        .city-label {
+            font-size: 12px;
+            text-anchor: middle;
+            pointer-events: none; /* Impede a seleção do texto */
+        }
+        
+        .filtro {
+            position: absolute;
+            top: 10;
+            left: 0;
+            width: 20%;
+            height: 100%;
+        }
+
+        .grafico {
+            position: absolute;
+            top: 10;
+            right: 0;
+            width: 80%;
+            height: 100%;
+        }     
+    </style>
+</head>
+<body>
+    <div class="filtro">
+        <label for="filtro_cidade">Choose Cities:</label>
+        <div id="checkbox-container"></div>
+    </div>   
+
+    <div class="grafico">
+        <svg id="slopechart" width="800" height="500"></svg>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="dados_city_panel.js"></script>
+    
+    <script>
+        const width = 800; 
+        const height = 500; 
+        const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+
+        const colorScale = d3.scaleOrdinal(d3.schemeTableau10);
+
+        const escala_x = d3.scalePoint()
+            .domain(["1990 vs 1970", "2023 vs 2000"])
+            .range([margin.left, width - margin.right]);
+
+        const escala_y = d3.scaleLinear()
+            .domain([
+                d3.min(base_city, d => Math.min(d["1990 vs 1970"], d["2023 vs 2000"])),
+                d3.max(base_city, d => Math.max(d["1990 vs 1970"], d["2023 vs 2000"]))
+            ])
+            .range([height - margin.bottom, margin.top]);
+
+        const svg = d3.select("#slopechart");
+
+        function drawChart(data) {
+            // Limpa o SVG
+            svg.selectAll("*").remove();
+
+            // Adiciona linhas
+            svg.selectAll("line")
+                .data(data)
+                .enter()
+                .append("line")
+                .attr("x1", escala_x("1990 vs 1970"))
+                .attr("y1", d => escala_y(d["1990 vs 1970"]))
+                .attr("x2", escala_x("2023 vs 2000"))
+                .attr("y2", d => escala_y(d["2023 vs 2000"]))
+                .attr("stroke", d => colorScale(d.Cidade))
+                .attr("stroke-width", 2);
+
+            // Adiciona textos (nome da cidade no ponto inicial)
+            svg.selectAll(".city-label")
+                .data(data)
+                .enter()
+                .append("text")
+                .attr("x", escala_x("1990 vs 1970") - 10) // Levemente à esquerda do ponto inicial
+                .attr("y", d => escala_y(d["1990 vs 1970"]))
+                .attr("class", "city-label")
+                .text(d => d.Cidade);
+        }
+
+        // Adiciona legenda para o eixo X
+        svg.append("text")
+            .attr("class", "axis-label")
+            .attr("x", escala_x("1990 vs 1970"))
+            .attr("y", height - margin.bottom + 40)
+            .text("1990 vs 1970");
+
+        svg.append("text")
+            .attr("class", "axis-label")
+            .attr("x", escala_x("2023 vs 2000"))
+            .attr("y", height - margin.bottom + 40)
+            .text("2023 vs 2000");
+
+        // Cria caixas de seleção
+        const checkboxContainer = d3.select("#checkbox-container");
+        base_city.forEach(d => {
+            checkboxContainer.append("div")
+                .append("input")
+                .attr("type", "checkbox")
+                .attr("id", `checkbox-${d.Cidade}`)
+                .attr("value", d.Cidade)
+                .on("change", updateChart);
+
+            checkboxContainer.append("label")
+                .attr("for", `checkbox-${d.Cidade}`)
+                .text(d.Cidade);
+        });
+
+        function updateChart() {
+            const selectedCities = Array.from(d3.selectAll("#checkbox-container input:checked")
+                .nodes())
+                .map(checkbox => checkbox.value);
+
+            const filteredData = base_city.filter(d => selectedCities.includes(d.Cidade));
+            drawChart(filteredData);
+        }
+
+        // Desenha o gráfico inicial com todas as cidades
+        drawChart(base_city);
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+/* Fonte do Google Fonts */
+
+
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+svg { 
+    outline: 2px solid black;
+}
+.city-label {
+    font-size: 10px;
+    text-anchor: end;
+    pointer-events: none;
+}
+.axis-label {
+    font-size: 12px;
+    font-weight:600;
+}
+.value-label {
+    font-size: 10px;
+    text-anchor: middle;
+}
+.legend {
+    font-size: 12px;
+}
+.error-message {
+    color: red;
+    font-weight: bold;
+}
+
+    #checkbox-container {
+display: flex;
+flex-direction: column;
+font-size: 14px; /* Ajuste o tamanho da fonte conforme necessário */
+}
+
+#checkbox-container div {
+display: flex;
+align-items: center;
+margin-bottom: 5px; /* Espaço entre as linhas */
+}
+
+#checkbox-container input[type="checkbox"] {
+margin-right: 10px; /* Espaço entre a caixa de seleção e o texto */
+}

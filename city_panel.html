@@ -1,66 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>City_Panel</title>
     <style>
-        /* Fonte do Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+      /* Fonte do Google Fonts */
+      @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
+      #ground {
+        background-color: aqua;
+      }
 
-        #ground {
-        background-color: aqua; }
+      body {
+        font-family: "Roboto", sans-serif;
+      }
 
-        
-        body {
-            font-family: 'Roboto', sans-serif;
-        }
+      svg {
+        outline: 0.5px solid lightgrey;
+      }
+      .city-label {
+        font-size: 10px;
+        text-anchor: end;
+        pointer-events: none;
+      }
+      .axis-label {
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .value-label {
+        font-size: 10px;
+        text-anchor: middle;
+      }
+      .legend {
+        font-size: 12px;
+      }
+      .error-message {
+        color: red;
+        font-weight: bold;
+      }
 
-        svg { 
-            outline: 0.5px solid lightgrey;
-        }
-        .city-label {
-            font-size: 10px;
-            text-anchor: end;
-            pointer-events: none;
-        }
-        .axis-label {
-            font-size: 12px;
-            font-weight:600;
-        }
-        .value-label {
-            font-size: 10px;
-            text-anchor: middle;
-        }
-        .legend {
-            font-size: 12px;
-        }
-        .error-message {
-            color: red;
-            font-weight: bold;
-        }
-        
-            #checkbox-container {
+      #checkbox-container {
         display: flex;
         flex-direction: column;
         font-size: 14px; /* Ajuste o tamanho da fonte conforme necessário */
-    }
-    
-    #checkbox-container div {
+      }
+
+      #checkbox-container div {
         display: flex;
         align-items: center;
         margin-bottom: 5px; /* Espaço entre as linhas */
-    }
-    
-    #checkbox-container input[type="checkbox"] {
-        margin-right: 10px; /* Espaço entre a caixa de seleção e o texto */
-    }
+      }
 
-    #selector {
-        background-color: darkcyan;
+      #checkbox-container input[type="checkbox"] {
+        margin-right: 10px; /* Espaço entre a caixa de seleção e o texto */
+      }
+
+      #selector {
+        background-color: #4cc0e5;
         position: absolute;
-        overflow-y: auto; 
+        overflow-y: auto;
         scrollbar-width: thin;
         scrollbar-color: #888 #f1f1f1;
         padding: 5px;
@@ -69,34 +68,33 @@
         left: 10px;
         width: 17%;
         height: 80%;
+      }
 
-    }
+      #selector::-webkit-scrollbar {
+        width: 10px; /* Largura da barra de rolagem */
+      }
 
-    #selector::-webkit-scrollbar {
-      width: 10px; /* Largura da barra de rolagem */
-    }
-
-    #container-chart {
+      #container-chart {
         position: absolute;
         top: 10;
-        left: 19% ;
+        left: 19%;
         width: 80%;
         height: 100%;
-    }
+      }
 
-    #main_head {
+      #main_head {
         top: 0;
         left: 10px;
         height: 50px;
         width: 97%;
-        background-color: darkslategrey;
+        background-color: #4cc0e5;
         border-radius: 10px;
         padding: 20px;
         margin-bottom: 5px;
-    }
+      }
 
-    /* Ajustar */
-    /* #explan {
+      /* Ajustar */
+      /* #explan {
         left: 80%;
         right: 0;
         height: 40%;
@@ -110,278 +108,307 @@
         right: 0;
         height: 40%;
         background-color: cyan;} */
-
-
-  
-
-
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="ground">
-        <div id="main_head">
-        </div>
+      <div id="main_head">
+        <h1>The evolution of the wet bulb temperature in latin america</h1>
+        <p></p>
+      </div>
 
-        <div id="explan">
-        </div>
+      <div id="explan"></div>
 
-        <div id="source">
-        </div>
+      <div id="source"></div>
 
-        <div id="project_owner">
-        </div>
+      <div id="project_owner"></div>
 
-        <div id="selector">
-            <label for="filtro_cidade">Choose Cities:</label>
-            <div id="checkbox-container"></div>
-            <div id="placeholder"></div>
-        </div>
-          
-     <div id="container-chart">
+      <div id="selector">
+        <label for="filtro_cidade">Choose Cities:</label>
+        <div id="checkbox-container"></div>
+        <div id="placeholder">You can select up to 10 cities</div>
+      </div>
+
+      <div id="container-chart">
         <svg id="slopechart" width="810" height="480"></svg>
         <script src="https://d3js.org/d3.v7.min.js"></script>
         <script src="dados_city_panel.js"></script>
-    
+
         <script>
-             const width = 800; 
-             const height = 470; 
-             const margin = { top: 20, right: 80, bottom: 50, left: 150 };
+          const width = 800;
+          const height = 470;
+          const margin = { top: 20, right: 80, bottom: 50, left: 150 };
 
-        const colorScale = d3.scaleOrdinal(d3.schemeTableau10);
+          const colorScale = d3.scaleOrdinal(d3.schemeTableau10);
 
-        const escala_x = d3.scalePoint()
+          const escala_x = d3
+            .scalePoint()
             .domain(["1990 vs 1970", "2023 vs 2000"])
             .range([margin.left, width - margin.right]);
 
-        let escala_y; // Será definida na função drawChart
+          let escala_y; // Será definida na função drawChart
 
-        const svg = d3.select("#slopechart");
+          const svg = d3.select("#slopechart");
 
-        function drawChart(data) {
+          function drawChart(data) {
             svg.selectAll("*").remove();
 
             // Atualiza a escala Y com base nos dados selecionados
-            const allValues = data.flatMap(d => [d["1990 vs 1970"], d["2023 vs 2000"]]);
+            const allValues = data.flatMap((d) => [
+              d["1990 vs 1970"],
+              d["2023 vs 2000"],
+            ]);
             const yExtent = d3.extent(allValues);
             const yDomain = [Math.min(yExtent[0], 0), Math.max(yExtent[1], 0)];
 
-            escala_y = d3.scaleLinear()
-                .domain(yDomain)
-                .range([height - margin.bottom, margin.top])
-                .nice();
+            escala_y = d3
+              .scaleLinear()
+              .domain(yDomain)
+              .range([height - margin.bottom, margin.top])
+              .nice();
 
             // Adiciona a linha separadora tracejada para o valor zero
-            svg.append("line")
-                .attr("x1", margin.left)
-                .attr("x2", width - margin.right)
-                .attr("y1", escala_y(0))
-                .attr("y2", escala_y(0))
-                .attr("stroke", "gray")
-                .attr("stroke-width", 1)
-                .attr("stroke-opacity", 0.5)
-                .attr("stroke-dasharray", "5,5");
+            svg
+              .append("line")
+              .attr("x1", margin.left)
+              .attr("x2", width - margin.right)
+              .attr("y1", escala_y(0))
+              .attr("y2", escala_y(0))
+              .attr("stroke", "gray")
+              .attr("stroke-width", 1)
+              .attr("stroke-opacity", 0.5)
+              .attr("stroke-dasharray", "5,5");
 
             // Adiciona o eixo Y à direita
-            const yAxis = d3.axisRight(escala_y)
-                .ticks(10)
-                .tickFormat(d3.format(".1f"));
+            const yAxis = d3
+              .axisRight(escala_y)
+              .ticks(10)
+              .tickFormat(d3.format(".1f"));
 
-            svg.append("g")
-                .attr("class", "y-axis")
-                .attr("transform", `translate(${width - margin.right}, 0)`)
-                .call(yAxis)
-                .call(g => g.select(".domain").attr("stroke-opacity", 0.5))  // Aumenta a opacidade da linha do eixo
-                .call(g => g.selectAll(".tick line").attr("stroke-opacity", 0.5))  // Aumenta a opacidade das linhas de tick
-                .call(g => g.selectAll(".tick text").attr("fill-opacity", 0.5));
+            svg
+              .append("g")
+              .attr("class", "y-axis")
+              .attr("transform", `translate(${width - margin.right}, 0)`)
+              .call(yAxis)
+              .call((g) => g.select(".domain").attr("stroke-opacity", 0.5)) // Aumenta a opacidade da linha do eixo
+              .call((g) =>
+                g.selectAll(".tick line").attr("stroke-opacity", 0.5)
+              ) // Aumenta a opacidade das linhas de tick
+              .call((g) => g.selectAll(".tick text").attr("fill-opacity", 0.5));
 
             // Linhas verticais nos pontos de "1990 vs 1970" e "2023 vs 2000"
-            svg.append("line")
-                .attr("x1", escala_x("1990 vs 1970"))
-                .attr("y1", escala_y.range()[0])
-                .attr("x2", escala_x("1990 vs 1970"))
-                .attr("y2", escala_y.range()[1])
-                .attr("stroke", "gray")
-                .attr("stroke-width", 1)
-                .attr("stroke-opacity", 0.3);
+            svg
+              .append("line")
+              .attr("x1", escala_x("1990 vs 1970"))
+              .attr("y1", escala_y.range()[0])
+              .attr("x2", escala_x("1990 vs 1970"))
+              .attr("y2", escala_y.range()[1])
+              .attr("stroke", "gray")
+              .attr("stroke-width", 1)
+              .attr("stroke-opacity", 0.3);
 
-            svg.append("line")
-                .attr("x1", escala_x("2023 vs 2000"))
-                .attr("y1", escala_y.range()[0])
-                .attr("x2", escala_x("2023 vs 2000"))
-                .attr("y2", escala_y.range()[1])
-                .attr("stroke", "gray")
-                .attr("stroke-width", 1)
-                .attr("stroke-opacity", 0.3);
+            svg
+              .append("line")
+              .attr("x1", escala_x("2023 vs 2000"))
+              .attr("y1", escala_y.range()[0])
+              .attr("x2", escala_x("2023 vs 2000"))
+              .attr("y2", escala_y.range()[1])
+              .attr("stroke", "gray")
+              .attr("stroke-width", 1)
+              .attr("stroke-opacity", 0.3);
 
             // Linhas de conexão entre os dois pontos
-            svg.selectAll("line.city-line")
-                .data(data)
-                .enter()
-                .append("line")
-                .attr("class", "city-line")
-                .attr("x1", escala_x("1990 vs 1970"))
-                .attr("y1", d => escala_y(d["1990 vs 1970"]))
-                .attr("x2", escala_x("2023 vs 2000"))
-                .attr("y2", d => escala_y(d["2023 vs 2000"]))
-                .attr("stroke", d => colorScale(d.Cidade))
-                .attr("stroke-width", 2);
+            svg
+              .selectAll("line.city-line")
+              .data(data)
+              .enter()
+              .append("line")
+              .attr("class", "city-line")
+              .attr("x1", escala_x("1990 vs 1970"))
+              .attr("y1", (d) => escala_y(d["1990 vs 1970"]))
+              .attr("x2", escala_x("2023 vs 2000"))
+              .attr("y2", (d) => escala_y(d["2023 vs 2000"]))
+              .attr("stroke", (d) => colorScale(d.Cidade))
+              .attr("stroke-width", 2);
 
             // Adiciona bolinhas nos pontos de partida e chegada
-            svg.selectAll("circle.start-point")
-                .data(data)
-                .enter()
-                .append("circle")
-                .attr("class", "start-point")
-                .attr("cx", escala_x("1990 vs 1970"))
-                .attr("cy", d => escala_y(d["1990 vs 1970"]))
-                .attr("r", 5)
-                .attr("fill", d => colorScale(d.Cidade));
+            svg
+              .selectAll("circle.start-point")
+              .data(data)
+              .enter()
+              .append("circle")
+              .attr("class", "start-point")
+              .attr("cx", escala_x("1990 vs 1970"))
+              .attr("cy", (d) => escala_y(d["1990 vs 1970"]))
+              .attr("r", 5)
+              .attr("fill", (d) => colorScale(d.Cidade));
 
-            svg.selectAll("circle.end-point")
-                .data(data)
-                .enter()
-                .append("circle")
-                .attr("class", "end-point")
-                .attr("cx", escala_x("2023 vs 2000"))
-                .attr("cy", d => escala_y(d["2023 vs 2000"]))
-                .attr("r", 5)
-                .attr("fill", d => colorScale(d.Cidade));
+            svg
+              .selectAll("circle.end-point")
+              .data(data)
+              .enter()
+              .append("circle")
+              .attr("class", "end-point")
+              .attr("cx", escala_x("2023 vs 2000"))
+              .attr("cy", (d) => escala_y(d["2023 vs 2000"]))
+              .attr("r", 5)
+              .attr("fill", (d) => colorScale(d.Cidade));
 
             // Adiciona rótulos para o valor dos pontos abaixo dos círculos de partida
-            svg.selectAll("text.value-label.start")
-                .data(data)
-                .enter()
-                .append("text")
-                .attr("class", "value-label start")
-                .attr("x", escala_x("1990 vs 1970"))
-                .attr("y", d => escala_y(d["1990 vs 1970"]) + 15)
-                .text(d => d["1990 vs 1970"].toFixed(1))
-                .attr("fill", d => colorScale(d.Cidade));
+            svg
+              .selectAll("text.value-label.start")
+              .data(data)
+              .enter()
+              .append("text")
+              .attr("class", "value-label start")
+              .attr("x", escala_x("1990 vs 1970"))
+              .attr("y", (d) => escala_y(d["1990 vs 1970"]) + 15)
+              .text((d) => d["1990 vs 1970"].toFixed(1))
+              .attr("fill", (d) => colorScale(d.Cidade));
 
-            svg.selectAll("text.value-label.end")
-                .data(data)
-                .enter()
-                .append("text")
-                .attr("class", "value-label end")
-                .attr("x", escala_x("2023 vs 2000"))
-                .attr("y", d => escala_y(d["2023 vs 2000"]) + 15)
-                .text(d => d["2023 vs 2000"].toFixed(1))
-                .attr("fill", d => colorScale(d.Cidade));
+            svg
+              .selectAll("text.value-label.end")
+              .data(data)
+              .enter()
+              .append("text")
+              .attr("class", "value-label end")
+              .attr("x", escala_x("2023 vs 2000"))
+              .attr("y", (d) => escala_y(d["2023 vs 2000"]) + 15)
+              .text((d) => d["2023 vs 2000"].toFixed(1))
+              .attr("fill", (d) => colorScale(d.Cidade));
 
             // Adiciona rótulos para os nomes das cidades
-            svg.selectAll("text.city-label")
-                .data(data)
-                .enter()
-                .append("text")
-                .attr("class", "city-label")
-                .attr("x", margin.left - 10)
-                .attr("y", d => escala_y(d["1990 vs 1970"]))
-                .attr("dy", "0.35em")
-                .text(d => d.Cidade)
-                .attr("fill", d => colorScale(d.Cidade));
+            svg
+              .selectAll("text.city-label")
+              .data(data)
+              .enter()
+              .append("text")
+              .attr("class", "city-label")
+              .attr("x", margin.left - 10)
+              .attr("y", (d) => escala_y(d["1990 vs 1970"]))
+              .attr("dy", "0.35em")
+              .text((d) => d.Cidade)
+              .attr("fill", (d) => colorScale(d.Cidade));
 
             // Adiciona rótulos para o eixo X
-            svg.append("text")
-                .attr("class", "axis-label")
-                .attr("x", escala_x("1990 vs 1970"))
-                .attr("y", height - margin.bottom + 30)
-                .attr("text-anchor", "middle")
-                .text("1990s vs. the 1970s");
+            svg
+              .append("text")
+              .attr("class", "axis-label")
+              .attr("x", escala_x("1990 vs 1970"))
+              .attr("y", height - margin.bottom + 30)
+              .attr("text-anchor", "middle")
+              .text("1990s vs. the 1970s");
 
-            svg.append("text")
-                .attr("class", "axis-label")
-                .attr("x", escala_x("2023 vs 2000"))
-                .attr("y", height - margin.bottom + 30)
-                .attr("text-anchor", "middle") 
-                .text("2023s vs. the 2000s");
+            svg
+              .append("text")
+              .attr("class", "axis-label")
+              .attr("x", escala_x("2023 vs 2000"))
+              .attr("y", height - margin.bottom + 30)
+              .attr("text-anchor", "middle")
+              .text("2023s vs. the 2000s");
 
             // Adiciona rótulo para o eixo Y
-            svg.append("text")
-                .attr("class", "axis-label")
-                .attr("transform", "rotate(-90)")
-                .attr("x", -height / 2)
-                .attr("y", width - margin.right + 40)
-                .attr("text-anchor", "middle")
-                .text("The variation in wet bulb temperature in ºC");
+            svg
+              .append("text")
+              .attr("class", "axis-label")
+              .attr("transform", "rotate(-90)")
+              .attr("x", -height / 2)
+              .attr("y", width - margin.right + 40)
+              .attr("text-anchor", "middle")
+              .text("The variation in wet bulb temperature in ºC");
 
             // Atualiza a legenda dinâmica
             updateLegend(data);
-        }
+          }
 
-        function updateLegend(data) {
+          function updateLegend(data) {
             const legend = svg.select(".legend");
             if (legend.empty()) {
-                svg.append("g")
-                    .attr("class", "legend")
-                    .attr("transform", `translate(${width - margin.right + 10},${margin.top})`);
+              svg
+                .append("g")
+                .attr("class", "legend")
+                .attr(
+                  "transform",
+                  `translate(${width - margin.right + 10},${margin.top})`
+                );
             }
 
             legend.selectAll("*").remove();
 
-            const yValues = data.flatMap(d => [d["1990 vs 1970"], d["2023 vs 2000"]]);
-            const uniqueYValues = Array.from(new Set(yValues)).sort((a, b) => a - b);
+            const yValues = data.flatMap((d) => [
+              d["1990 vs 1970"],
+              d["2023 vs 2000"],
+            ]);
+            const uniqueYValues = Array.from(new Set(yValues)).sort(
+              (a, b) => a - b
+            );
 
-            const legendItems = legend.selectAll(".legend-item")
-                .data(uniqueYValues)
-                .enter()
-                .append("g")
-                .attr("class", "legend-item")
-                .attr("transform", (d, i) => `translate(0, ${i * 20})`);
+            const legendItems = legend
+              .selectAll(".legend-item")
+              .data(uniqueYValues)
+              .enter()
+              .append("g")
+              .attr("class", "legend-item")
+              .attr("transform", (d, i) => `translate(0, ${i * 20})`);
 
-            legendItems.append("rect")
-                .attr("x", 0)
-                .attr("width", 10)
-                .attr("height", 10)
-                .attr("fill", "black");
+            legendItems
+              .append("rect")
+              .attr("x", 0)
+              .attr("width", 10)
+              .attr("height", 10)
+              .attr("fill", "black");
 
-            legendItems.append("text")
-                .attr("x", 15)
-                .attr("y", 10)
-                .text(d => d.toFixed(1))
-                .style("font-size", "12px");
-        }
-        const checkboxContainer = d3.select("#checkbox-container");
-base_city.forEach(d => {
-    const containerDiv = checkboxContainer.append("div");
+            legendItems
+              .append("text")
+              .attr("x", 15)
+              .attr("y", 10)
+              .text((d) => d.toFixed(1))
+              .style("font-size", "12px");
+          }
+          const checkboxContainer = d3.select("#checkbox-container");
+          base_city.forEach((d) => {
+            const containerDiv = checkboxContainer.append("div");
 
-    containerDiv.append("input")
-        .attr("type", "checkbox")
-        .attr("value", d.Cidade)
-        .attr("id", d.Cidade)
-        .on("change", updateChart);
+            containerDiv
+              .append("input")
+              .attr("type", "checkbox")
+              .attr("value", d.Cidade)
+              .attr("id", d.Cidade)
+              .on("change", updateChart);
 
-    containerDiv.append("label")
-        .attr("for", d.Cidade)
-        .text(d.Cidade);
-});
+            containerDiv.append("label").attr("for", d.Cidade).text(d.Cidade);
+          });
 
-        function updateChart() {
+          function updateChart() {
             const selectedCities = Array.from(
-                d3.selectAll("#checkbox-container input:checked")
-                .nodes()
-            ).map(checkbox => checkbox.value);
+              d3.selectAll("#checkbox-container input:checked").nodes()
+            ).map((checkbox) => checkbox.value);
 
             if (selectedCities.length > 10) {
-                d3.select("#placeholder")
-                    .html('<span class="error-message">You can only select up to 10 cities.</span>');
-                return;
+              d3.select("#placeholder").html(
+                '<span class="error-message">You can only select up to 10 cities.</span>'
+              );
+              return;
             }
 
-            const filteredData = base_city.filter(d => selectedCities.includes(d.Cidade));
+            const filteredData = base_city.filter((d) =>
+              selectedCities.includes(d.Cidade)
+            );
 
             if (filteredData.length > 0) {
-                d3.select("#placeholder").style("display", "none");
-                drawChart(filteredData);
+              d3.select("#placeholder").style("display", "none");
+              drawChart(filteredData);
             } else {
-                d3.select("#placeholder").html('Select cities to display the chart.');
+              d3.select("#placeholder").html(
+                "Select cities to display the chart."
+              );
             }
-        }
+          }
 
-        // Inicializa o gráfico com mensagem de solicitação de seleção
-        drawChart([]);
-      </script>
+          // Inicializa o gráfico com mensagem de solicitação de seleção
+          drawChart([]);
+        </script>
       </div>
-     </div>
-</body>
-</html> 
- 
+    </div>
+  </body>
+</html>
